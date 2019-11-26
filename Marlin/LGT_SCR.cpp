@@ -37,6 +37,8 @@ int re_count = 0;
 E_MENU_TYPE menu_type= eMENU_IDLE;
 PRINTER_STATUS status_type= PRINTER_SETUP;
 PRINTER_KILL_STATUS kill_type = PRINTER_NORMAL;
+int mbl_count=0; // ajout Bruno
+
 
 static char fila_type = 0;  // 0 refer to PLA, 1 refer to ABS
 // 0 no check, 1 check PLA, 2 check ABS, used for "no enough temp" dialog in fila [OK] return
@@ -148,7 +150,7 @@ uint8_t led_times = 1, led_status=0;
 int led_counter = 0;
 /*************************************
 FUNCTION:	The state of LED lamp
-LED:	Color of LED lamp;(LED_RED¡¢LED_GREEN¡¢LED_BLUE)
+LED:	Color of LED lamp;(LED_REDï¿½ï¿½LED_GREENï¿½ï¿½LED_BLUE)
 **************************************/
 void LGT_SCR::LED_Bright_State(uint8_t LED, uint16_t per, uint8_t mod)
 {
@@ -819,36 +821,83 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 					current_position[Z_AXIS] = Z_MAX_POS;
 				LGT_Line_To_Current(Z_AXIS);
 
-#ifdef U20_Pro
-				if (menu_type != eMENU_MOVE)
-				{
-					level_z_height = level_z_height + 0.1;
-					LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
-				}
-#endif // U20_Pro
+        #ifdef U20_Pro
+        				if (menu_type != eMENU_MOVE)
+        				{
+        					level_z_height = level_z_height + 0.1;
+        					LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
+        				}
+        #endif // U20_Pro
 			}
 			break;
 		case eBT_MOVE_Z_MINUS_2:
 //			if (current_position[Z_AXIS] > Z_MIN_POS) {
 				current_position[Z_AXIS] = current_position[Z_AXIS] - 0.1;
-#ifdef U30_Pro
-				if (xyz_home == true || z_home == true)
-				{
-					if (current_position[Z_AXIS] < Z_MIN_POS)
-						current_position[Z_AXIS] = Z_MIN_POS;
-				}
-#endif // U30_Pro
+        #ifdef U30_Pro
+        				if (xyz_home == true || z_home == true)
+        				{
+        					if (current_position[Z_AXIS] < Z_MIN_POS)
+        						current_position[Z_AXIS] = Z_MIN_POS;
+        				}
+        #endif // U30_Pro
 				LGT_Line_To_Current(Z_AXIS);
 
-#ifdef U20_Pro
-				if (menu_type != eMENU_MOVE)
-				{
-					level_z_height = level_z_height - 0.1;
-					LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
-				}
-#endif // U20_Pro
-//			}
+        #ifdef U20_Pro
+        				if (menu_type != eMENU_MOVE)
+        				{
+        					level_z_height = level_z_height - 0.1;
+        					LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
+        				}
+        #endif // U20_Pro
+        //			}
 			break;
+      
+/////////////////////     
+//// add Bruno
+///////////////////
+
+    case eBT_MOVE_Z_PLUS_3:
+      if (current_position[Z_AXIS] < Z_MAX_POS) {
+        current_position[Z_AXIS] = current_position[Z_AXIS] + 0.05;
+        if (current_position[Z_AXIS] > Z_MAX_POS)
+          current_position[Z_AXIS] = Z_MAX_POS;
+        LGT_Line_To_Current(Z_AXIS);
+
+        #ifdef U20_Pro
+                if (menu_type != eMENU_MOVE)
+                {
+                  level_z_height = level_z_height + 0.05;
+                  LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
+                }
+        #endif // U20_Pro
+      }
+      break;
+    case eBT_MOVE_Z_MINUS_3:
+//      if (current_position[Z_AXIS] > Z_MIN_POS) {
+        current_position[Z_AXIS] = current_position[Z_AXIS] -  0.05;
+        #ifdef U30_Pro
+                if (xyz_home == true || z_home == true)
+                {
+                  if (current_position[Z_AXIS] < Z_MIN_POS)
+                    current_position[Z_AXIS] = Z_MIN_POS;
+                }
+        #endif // U30_Pro
+        LGT_Line_To_Current(Z_AXIS);
+
+        #ifdef U20_Pro
+                if (menu_type != eMENU_MOVE)
+                {
+                  level_z_height = level_z_height -  0.05;
+                  LGT_Send_Data_To_Screen(ADDR_VAL_LEVEL_Z_UP_DOWN, (uint16_t)(10 * level_z_height));
+                }
+        #endif // U20_Pro
+        //      }
+      break;
+
+/////////////////////     
+//// Fin Bruno
+////////////////////
+      
 			//E Axis
 		case eBT_MOVE_E_PLUS_0:
 			if (thermalManager.current_temperature[0] >= LGT_Get_Extrude_Temp())
@@ -1369,6 +1418,33 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 		case eBT_MOVE_P2:
 			menu_move_dis_chk = 2;
 			break;
+
+////////////////////////////////
+///////// Bruno Add
+  case eBT_MBL_START:      
+          thermalManager.setTargetBed(60);
+          mbl_count=1;
+          enqueue_and_echo_commands_P(PSTR("G29 S1"));
+         
+      break;
+       case eBT_MBL_NEXT:
+          mbl_count++;
+       if (mbl_count==(GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X + 1)) { // si tous les points sont fait 
+            thermalManager.setTargetBed(0); // On passe le BED a 0
+            enqueue_and_echo_commands_P(PSTR("M500")); // On sauvegarde
+            LGT_Change_Page(ID_DIALOG_MBL_FINISH);  // On charge la page de confirmation
+        }else{ // sinon On va au point suivant
+            enqueue_and_echo_commands_P(PSTR("G29 S2"));
+        }
+            
+      break;
+       case eBT_MBL_Save:
+            thermalManager.setTargetBed(0);
+            enqueue_and_echo_commands_P(PSTR("M500"));
+      break;
+////////////////////////////////
+///////// Bruno FIN
+
 
 #ifdef U20_Pro
 		case eBT_TUNE_SWITCH_LEDS:

@@ -242,7 +242,13 @@ enum E_BUTTON_KEY {
 	eBT_PRINT_FILA_CHANGE_YES,
 	eBT_PRINT_FILA_HEAT_NO,
 	eBT_PRINT_FILA_UNLOAD_OK,		//65 0041
-	eBT_PRINT_FILA_LOAD_OK
+	eBT_PRINT_FILA_LOAD_OK,
+ 
+  eBT_MOVE_Z_PLUS_3, // Added Bruno 67 - 0043 move 0.05mm
+  eBT_MOVE_Z_MINUS_3, // Added Bruno 68 - 0044 move 0.05mm
+  eBT_MBL_START, // Added Bruno 69 - 0045 G29 S1
+  eBT_MBL_NEXT, // Added Bruno 70 - 0046 G29 S2
+  eBT_MBL_Save // Added Bruno 71 - 0047 M500
 };
 
 enum E_MENU_TYPE {
@@ -286,6 +292,7 @@ enum E_MENU_TYPE {
 #define ID_DIALOG_UTILI_FILA_LOAD	(140)
 #define ID_DIALOG_UTILI_FILA_UNLOAD	(141)
 #define ID_DIALOG_LOAD_FINISH       (144)
+#define ID_DIALOG_MBL_FINISH       (154) // Ajout Bruno
 
 #define ID_DIALOG_PRINT_FILA_WAIT	(134)
 #define ID_DIALOG_PRINT_FILA_LOAD	(135)
