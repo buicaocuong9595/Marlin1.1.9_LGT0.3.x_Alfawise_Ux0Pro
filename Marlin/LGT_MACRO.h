@@ -265,8 +265,8 @@ enum E_MENU_TYPE {
 	eMENU_UTILI_FILA,
 	eMENU_PRINT_HOME,   // 10   
 	eMENU_HOME_FILA,
-	eMENU_FILE			//12
-
+	eMENU_FILE	,	//12
+  eMENU_leveling_MBL  // ADD Bruno
 };
 
 #define ID_MENU_HOME                (1)
