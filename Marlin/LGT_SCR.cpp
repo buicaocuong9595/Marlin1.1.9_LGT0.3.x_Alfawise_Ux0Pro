@@ -1428,9 +1428,16 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
          
       break;
        case eBT_MBL_NEXT:
-          enqueue_and_echo_commands_P(PSTR("G29 S2"));
-          mbl_count++;
+        if (mbl_count==0){
+             thermalManager.setTargetBed(60);
+             mbl_count=1;
+             enqueue_and_echo_commands_P(PSTR("G29 S1"));
+          }else{      
+             enqueue_and_echo_commands_P(PSTR("G29 S2"));
+             mbl_count++;
+          }
        if (mbl_count==(GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X+1 )) { // si tous les points sont fait 
+            mbl_count=0;
             thermalManager.setTargetBed(0); // On passe le BED a 0
             enqueue_and_echo_commands_P(PSTR("M500")); // On sauvegarde
             LGT_Change_Page(ID_DIALOG_MBL_FINISH);  // On charge la page de confirmation
@@ -1664,7 +1671,8 @@ void LGT_SCR::LGT_Printer_Data_Updata()
 		LGT_Send_Data_To_Screen(ADDR_VAL_CUR_B, (int16_t)thermalManager.current_temperature_bed);
 		break;
     case eMENU_leveling_MBL:
-        //LGT_Send_Data_To_Screen(ADDR_VAL_MOVE_POS_Z, (int16_t)(current_position[Z_AXIS] * 10));
+        LGT_Send_Data_To_Screen(ADDR_VAL_MOVE_POS_Z, (int16_t)(current_position[Z_AXIS] * 10));
+        LGT_Send_Data_To_Screen(ADDR_VAL_CUR_B, (int16_t)thermalManager.current_temperature_bed);
     break;
 	case eMENU_PRINT_HOME:
 		progress_percent = card.percentDone();
