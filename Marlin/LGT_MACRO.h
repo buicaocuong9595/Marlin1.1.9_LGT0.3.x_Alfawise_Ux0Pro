@@ -151,8 +151,8 @@
 
 //BDO add
 #define ADDR_TXT_SETTINGS_StepPerUnit_X         (0x1520)           //1520
-#define ADDR_TXT_SETTINGS_StepPerUnit_Y         (ADDR_TXT_SETTINGS_StepPerUnit_X+8)  //1528
-#define ADDR_TXT_SETTINGS_StepPerUnit_Z         (ADDR_TXT_SETTINGS_StepPerUnit_Y+8)  //1530
+#define ADDR_TXT_SETTINGS_StepPerUnit_Y         (ADDR_TXT_SETTINGS_StepPerUnit_X + 8)  //1528
+#define ADDR_TXT_SETTINGS_StepPerUnit_Z         (ADDR_TXT_SETTINGS_StepPerUnit_Y + 8)  //1530
 
 // FILE SELECT
 #define ADDR_VAL_PRINT_FILE_SELECT          (0x1550)                                        // 1550

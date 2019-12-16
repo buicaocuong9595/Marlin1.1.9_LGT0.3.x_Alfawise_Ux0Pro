@@ -39,8 +39,8 @@ PRINTER_STATUS status_type= PRINTER_SETUP;
 PRINTER_KILL_STATUS kill_type = PRINTER_NORMAL;
 
 int mbl_count=0; // ajout Bruno
-float AXIS_STEPS_PER_UNIT_arr[] = DEFAULT_AXIS_STEPS_PER_UNIT;// ajout Bruno
-char steps_mm_X[8], steps_mm_Y[8],steps_mm_Z[8] ;// ajout Bruno
+//float AXIS_STEPS_PER_UNIT_arr[] = DEFAULT_AXIS_STEPS_PER_UNIT;// ajout Bruno
+//char steps_mm_X[8], steps_mm_Y[8],steps_mm_Z[8] ;// ajout Bruno
 
 
 static char fila_type = 0;  // 0 refer to PLA, 1 refer to ABS
@@ -1455,13 +1455,13 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
       break;
       case eBT_UTIL_Settings:
 
-        dtostrf(AXIS_STEPS_PER_UNIT_arr[0], 6, 3, steps_mm_X);
-        dtostrf(AXIS_STEPS_PER_UNIT_arr[1], 6, 3, steps_mm_Y);
-        dtostrf(AXIS_STEPS_PER_UNIT_arr[2], 6, 3, steps_mm_Z);
+      //  dtostrf(AXIS_STEPS_PER_UNIT_arr[0], 6, 3, steps_mm_X);
+       // dtostrf(AXIS_STEPS_PER_UNIT_arr[1], 6, 3, steps_mm_Y);
+        //dtostrf(AXIS_STEPS_PER_UNIT_arr[2], 6, 3, steps_mm_Z);
           
-        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_X,steps_mm_X);
-        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Y,steps_mm_Y);
-        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Z,steps_mm_Z);
+      //  LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_X,steps_mm_X);
+      //  LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Y,steps_mm_Y);
+      //  LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Z,steps_mm_Z);
            LGT_Change_Page(ID_MENU_SETTINGS);
       break;
 ////////////////////////////////
