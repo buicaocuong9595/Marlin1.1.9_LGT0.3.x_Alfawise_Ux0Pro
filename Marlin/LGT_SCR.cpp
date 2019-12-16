@@ -37,7 +37,10 @@ int re_count = 0;
 E_MENU_TYPE menu_type= eMENU_IDLE;
 PRINTER_STATUS status_type= PRINTER_SETUP;
 PRINTER_KILL_STATUS kill_type = PRINTER_NORMAL;
+
 int mbl_count=0; // ajout Bruno
+float AXIS_STEPS_PER_UNIT_arr[] = DEFAULT_AXIS_STEPS_PER_UNIT;// ajout Bruno
+char steps_mm_X[8], steps_mm_Y[8],steps_mm_Z[8] ;// ajout Bruno
 
 
 static char fila_type = 0;  // 0 refer to PLA, 1 refer to ABS
@@ -1240,8 +1243,8 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 			#else  //U30_Pro
 				if (xyz_home == false)
 				{
-					thermalManager.setTargetHotend(0, target_extruder);
-					thermalManager.setTargetBed(0);
+				//	thermalManager.setTargetHotend(0, target_extruder);
+				//	thermalManager.setTargetBed(0);
 					enqueue_and_echo_commands_P(PSTR("G28"));
 					xyz_home = true;
 				}
@@ -1263,8 +1266,8 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 			#else  //U30_Pro
 				if (xyz_home == false)
 				{
-					thermalManager.setTargetHotend(0, target_extruder);
-					thermalManager.setTargetBed(0);
+				//	thermalManager.setTargetHotend(0, target_extruder);
+				//	thermalManager.setTargetBed(0);
 					enqueue_and_echo_commands_P(PSTR("G28"));
 					xyz_home = true;
 				}
@@ -1286,8 +1289,8 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 			#else  //U30_Pro
 				if (xyz_home == false)
 				{
-					thermalManager.setTargetHotend(0, target_extruder);
-					thermalManager.setTargetBed(0);
+				//	thermalManager.setTargetHotend(0, target_extruder);
+				//	thermalManager.setTargetBed(0);
 					enqueue_and_echo_commands_P(PSTR("G28"));
 					xyz_home = true;
 				}
@@ -1309,8 +1312,8 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 			#else  //U30_Pro
 				if (xyz_home == false)
 				{
-					thermalManager.setTargetHotend(0, target_extruder);
-					thermalManager.setTargetBed(0);
+				//	thermalManager.setTargetHotend(0, target_extruder);
+				//	thermalManager.setTargetBed(0);
 					enqueue_and_echo_commands_P(PSTR("G28"));
 					xyz_home = true;
 				}
@@ -1323,8 +1326,8 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 			#ifdef U20_Pro
 				if (xy_home == false)
 				{
-					thermalManager.setTargetHotend(0, target_extruder);
-					thermalManager.setTargetBed(0);
+				//	thermalManager.setTargetHotend(0, target_extruder);
+				//	thermalManager.setTargetBed(0);
 					enqueue_and_echo_commands_P(PSTR("G28 X0 Y0"));
 					xy_home = true;
 				}
@@ -1423,30 +1426,43 @@ void LGT_SCR::LGT_Analysis_DWIN_Screen_Cmd()
 ///////// Bruno Add
   case eBT_MBL_START:      
           thermalManager.setTargetBed(60);
+     thermalManager.setTargetHotend(PLA_E_TEMP, target_extruder);
           mbl_count=1;
           enqueue_and_echo_commands_P(PSTR("G29 S1"));
+
+              LGT_Change_Page(ID_MENU_MBL_START);
+            menu_type = eMENU_leveling_MBL;
          
-      break;
+     break;
        case eBT_MBL_NEXT:
-        if (mbl_count==0){
-             thermalManager.setTargetBed(60);
-             mbl_count=1;
-             enqueue_and_echo_commands_P(PSTR("G29 S1"));
-          }else{      
-             enqueue_and_echo_commands_P(PSTR("G29 S2"));
-             mbl_count++;
-          }
-       if (mbl_count==(GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X+1 )) { // si tous les points sont fait 
+        
+       if (mbl_count==(GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X )) { // si tous les points sont fait 
             mbl_count=0;
+            enqueue_and_echo_commands_P(PSTR("G29 S2"));
+            thermalManager.setTargetHotend(0, target_extruder); // On passe le hotend a 0
             thermalManager.setTargetBed(0); // On passe le BED a 0
             enqueue_and_echo_commands_P(PSTR("M500")); // On sauvegarde
             LGT_Change_Page(ID_DIALOG_MBL_FINISH);  // On charge la page de confirmation
+       }else{
+                 
+             enqueue_and_echo_commands_P(PSTR("G29 S2"));
+             mbl_count++;
        }
-            
       break;
        case eBT_MBL_Save:
             thermalManager.setTargetBed(0);
             enqueue_and_echo_commands_P(PSTR("M500"));
+      break;
+      case eBT_UTIL_Settings:
+
+        dtostrf(AXIS_STEPS_PER_UNIT_arr[0], 6, 3, steps_mm_X);
+        dtostrf(AXIS_STEPS_PER_UNIT_arr[1], 6, 3, steps_mm_Y);
+        dtostrf(AXIS_STEPS_PER_UNIT_arr[2], 6, 3, steps_mm_Z);
+          
+        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_X,steps_mm_X);
+        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Y,steps_mm_Y);
+        LGT_Send_Data_To_Screen1(ADDR_TXT_SETTINGS_StepPerUnit_Z,steps_mm_Z);
+           LGT_Change_Page(ID_MENU_SETTINGS);
       break;
 ////////////////////////////////
 ///////// Bruno FIN
@@ -1665,15 +1681,24 @@ void LGT_SCR::LGT_Printer_Data_Updata()
 	case eMENU_TUNE_FLOW:
 		LGT_Send_Data_To_Screen(ADDR_VAL_FLOW,planner.flow_percentage[0]);
 		break;
+
 	case eMENU_UTILI_FILA:
+
+	
 	case eMENU_HOME_FILA:
 		LGT_Send_Data_To_Screen(ADDR_VAL_CUR_E, (int16_t)thermalManager.current_temperature[0]);
 		LGT_Send_Data_To_Screen(ADDR_VAL_CUR_B, (int16_t)thermalManager.current_temperature_bed);
 		break;
+  
+    //Bruno Add
     case eMENU_leveling_MBL:
-        LGT_Send_Data_To_Screen(ADDR_VAL_MOVE_POS_Z, (int16_t)(current_position[Z_AXIS] * 10));
+        LGT_Send_Data_To_Screen(ADDR_VAL_MOVE_POS_Z, (int16_t)(current_position[Z_AXIS] * 100));
         LGT_Send_Data_To_Screen(ADDR_VAL_CUR_B, (int16_t)thermalManager.current_temperature_bed);
+        LGT_Send_Data_To_Screen(ADDR_VAL_CUR_E, (int16_t)thermalManager.current_temperature[0]);
+
+        
     break;
+	
 	case eMENU_PRINT_HOME:
 		progress_percent = card.percentDone();
 		if(progress_percent>0)

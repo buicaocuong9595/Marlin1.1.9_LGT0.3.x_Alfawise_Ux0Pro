@@ -148,6 +148,12 @@
 #define ADDR_TXT_ABOUT_FW_SCREEN            (ADDR_TXT_ABOUT_SIZE + LEN_FILE_NAME)           // 14C0
 #define ADDR_TXT_ABOUT_FW_BOARD             (ADDR_TXT_ABOUT_FW_SCREEN + LEN_FILE_NAME)      // 14E0
 #define ADDR_TXT_ABOUT_WORK_TIME_MAC         (ADDR_TXT_ABOUT_FW_BOARD+LEN_FILE_NAME)        //1500
+
+//BDO add
+#define ADDR_TXT_SETTINGS_StepPerUnit_X         (0x1520)           //1520
+#define ADDR_TXT_SETTINGS_StepPerUnit_Y         (ADDR_TXT_SETTINGS_StepPerUnit_X+8)  //1528
+#define ADDR_TXT_SETTINGS_StepPerUnit_Z         (ADDR_TXT_SETTINGS_StepPerUnit_Y+8)  //1530
+
 // FILE SELECT
 #define ADDR_VAL_PRINT_FILE_SELECT          (0x1550)                                        // 1550
 #define ADDR_TXT_PRINT_FILE_SELECT          (ADDR_VAL_PRINT_FILE_SELECT + LEN_WORD)         // 1552  
@@ -248,7 +254,9 @@ enum E_BUTTON_KEY {
   eBT_MOVE_Z_MINUS_3, // Added Bruno 68 - 0044 move 0.05mm
   eBT_MBL_START, // Added Bruno 69 - 0045 G29 S1
   eBT_MBL_NEXT, // Added Bruno 70 - 0046 G29 S2
-  eBT_MBL_Save // Added Bruno 71 - 0047 M500
+  eBT_MBL_Save, // Added Bruno 71 - 0047 M500
+  eBT_UTIL_Settings  //Added Bruno 72 - 0048
+  
 };
 
 enum E_MENU_TYPE {
@@ -294,6 +302,7 @@ enum E_MENU_TYPE {
 #define ID_DIALOG_LOAD_FINISH       (144)
 #define ID_DIALOG_MBL_FINISH       (154) // Ajout Bruno
 
+
 #define ID_DIALOG_PRINT_FILA_WAIT	(134)
 #define ID_DIALOG_PRINT_FILA_LOAD	(135)
 #define ID_DIALOG_PRINT_FILA_UNLOAD	(136)
@@ -307,7 +316,8 @@ enum E_MENU_TYPE {
 #define ID_MENU_MEASU_S2            (114)
 #define ID_MENU_MEASU_S3            (116)
 #define ID_MENU_MEASU_FINISH        (123)
-
+#define ID_MENU_MBL_START      (152) // Ajout Bruno
+#define ID_MENU_SETTINGS        (155)
 //===========================================================================
 //===========================   PRINTER ABOUT   =============================
 //===========================================================================
